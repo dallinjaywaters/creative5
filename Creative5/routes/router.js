@@ -90,11 +90,19 @@ router.get('/logout', function (req, res, next) {
   }
 });
 
-router.get('/delete/', function(req, res, next) {
+router.get('/delete', function(req, res, next) {
   console.log("in Delete");
-  req.user.email.remove();
-  req.user.username.remove();
-  res.sendStatus(200);
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      console.log(user.username);
+      if (error) {
+        return next(error);
+      } else {
+  	user.remove();
+  	//req.user.username.remove();
+  	//res.sendStatus(200);
+      }
+    });
   if (req.session) {
     // delete session object
     req.session.destroy(function (err) {
